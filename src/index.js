@@ -48,15 +48,11 @@ client.on('interactionCreate', async (interaction) => {
         return;
       } else if (interaction.customId == '1') {
         // remove action | Lunch, | Toilet | Break, | Meeting
-        const newName = interaction.member.nickname
-          .replace(' | Lunch', '')
-          .replace(' | Toilet', '')
-          .replace(' | Break', '')
-          .replace(' | Meeting', '');
+        const newName = cleanStatusFromNickname(interaction.member.nickname);
         await interaction.member.setNickname(newName);
       } else {
         // add action | Lunch, | Toilet, | Break, | Meeting
-        const newName = `${interaction.member.nickname} | ${interaction.component.label}`;
+        const newName = `${cleanStatusFromNickname(interaction.member.nickname)} | ${interaction.component.label}`;
         await interaction.member.setNickname(newName);
       }
     } else if (interaction.isModalSubmit) {
@@ -122,3 +118,13 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 });
 
 client.login(process.env.TOKEN);
+
+function cleanStatusFromNickname(nickname) {
+  if (!nickname) return nickname;
+
+  return nickname
+    .replace(' | Lunch', '')
+    .replace(' | Toilet', '')
+    .replace(' | Break', '')
+    .replace(' | Meeting', '');
+}
